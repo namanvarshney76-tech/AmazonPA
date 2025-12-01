@@ -150,7 +150,7 @@ class AmazonPaymentProcessor:
                 flow = Flow.from_client_config(
                     client_config=creds_data,
                     scopes=combined_scopes,
-                    redirect_uri=st.secrets.get("redirect_uri", "https://amazon-payment-processor.streamlit.app/")
+                    redirect_uri=st.secrets.get("redirect_uri", "https://amazonpa.streamlit.app/")
                 )
                 
                 # Generate authorization URL
@@ -977,4 +977,5 @@ def main():
 
 # Run the application
 if __name__ == "__main__":
+
     main()
