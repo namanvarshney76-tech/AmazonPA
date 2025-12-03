@@ -150,7 +150,7 @@ class AmazonPaymentProcessor:
                 flow = Flow.from_client_config(
                     client_config=creds_data,
                     scopes=combined_scopes,
-                    redirect_uri=st.secrets.get("redirect_uri", "https://amazonpa.streamlit.app/")
+                    redirect_uri=st.secrets.get("redirect_uri", "https://amazon-payment-processor.streamlit.app/")
                 )
                 
                 # Generate authorization URL
@@ -916,6 +916,31 @@ def main():
             finally:
                 st.session_state.workflow_running = False
     
+    # New section: Standalone duplicate removal
+    st.divider()
+    st.header("🧹 Clean Up Sheet")
+    
+    if st.button("🗑️ Remove Duplicates from Sheet", type="secondary", disabled=st.session_state.workflow_running):
+        current_config = processor.get_config()
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        status_text.text("Removing duplicates...")
+        progress_bar.progress(50)
+        
+        duplicates_removed = processor.remove_duplicates(current_config['sheet'])
+        
+        progress_bar.progress(100)
+        status_text.text("Complete!")
+        
+        if duplicates_removed > 0:
+            st.success(f"✅ Removed {duplicates_removed} duplicate rows from the sheet.")
+        else:
+            st.info("ℹ️ No duplicate rows found.")
+        
+        progress_bar.empty()
+        status_text.empty()
+    
     st.divider()
     
     # Logs section
@@ -977,5 +1002,4 @@ def main():
 
 # Run the application
 if __name__ == "__main__":
-
     main()
